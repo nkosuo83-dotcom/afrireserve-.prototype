@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriReserve | Admin Dashboard</title>
+
+<style>
+:root {
+  --bg: #0b1020;
+  --glass: rgba(255,255,255,.065);
+  --line: rgba(255,255,255,.13);
+  --text: #f7f7fb;
+  --muted: #a6aec4;
+  --gold: #e9c77b;
+  --purple: #8b7cff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 10% 0%, #28365d 0%, transparent 38%),
+    radial-gradient(ellipse at 95% 40%, #34245b 0%, transparent 34%),
+    var(--bg);
+}
+
+a { color: inherit; text-decoration: none; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 235px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  padding: 30px 18px;
+  background: rgba(9,13,28,.65);
+  border-right: 1px solid var(--line);
+  backdrop-filter: blur(24px);
+}
+
+.brand {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.7px;
+  margin: 5px 10px 38px;
+}
+
+.brand span { color: var(--gold); }
+
+.nav-label {
+  margin: 22px 12px 10px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.nav a {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 13px 14px;
+  margin: 5px 0;
+  border-radius: 13px;
+  color: #c3c9da;
+  transition: .25s ease;
+}
+
+.nav a:hover, .nav a.active {
+  color: white;
+  background: linear-gradient(110deg, rgba(139,124,255,.25), rgba(233,199,123,.08));
+  border: 1px solid var(--line);
+  transform: translateX(3px);
+}
+
+main { padding: 30px; min-width: 0; }
+
+.prototype-warning {
+  padding: 15px 18px;
+  margin: 0 0 24px;
+  border: 1px solid rgba(233,199,123,.55);
+  border-radius: 14px;
+  background: rgba(233,199,123,.08);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.prototype-warning strong {
+  color: var(--gold);
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+h1 { font-size: clamp(25px, 4vw, 36px); margin: 8px 0; }
+p { color: var(--muted); line-height: 1.6; }
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  backdrop-filter: blur(22px);
+  box-shadow: 0 18px 45px rgba(0,0,0,.15);
+  animation: rise .65s both;
+}
+
+.welcome {
+  padding: 28px;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome:after {
+  content: "✦";
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 100px;
+  color: rgba(233,199,123,.13);
+  animation: float 5s ease-in-out infinite;
+}
+
+.welcome h2 { font-size: 25px; margin: 12px 0 4px; }
+.welcome p { max-width: 550px; }
+
+.button {
+  display: inline-block;
+  padding: 12px 17px;
+  border-radius: 11px;
+  border: 1px solid var(--line);
+  color: white;
+  background: rgba(255,255,255,.07);
+  cursor: pointer;
+  transition: .25s;
+  font: inherit;
+}
+
+.button:hover {
+  transform: translateY(-3px);
+  border-color: var(--gold);
+  box-shadow: 0 8px 24px rgba(233,199,123,.13);
+}
+
+.button.gold {
+  background: linear-gradient(110deg, #e9c77b, #c9a354);
+  color: #15121a;
+  font-weight: 700;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.stat { padding: 20px; animation-delay: .1s; }
+.stat-icon { font-size: 22px; }
+.stat-label { color: var(--muted); font-size: 13px; margin-top: 17px; }
+.stat-value { font-size: 27px; font-weight: 750; margin-top: 8px; }
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 18px;
+}
+
+.panel { padding: 23px; min-width: 0; }
+.panel h3 { margin: 0 0 8px; }
+
+.chart {
+  height: 185px;
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  padding: 20px 5px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.bar-wrap {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  gap: 9px;
+}
+
+.bar {
+  width: 100%;
+  max-width: 35px;
+  min-height: 8px;
+  border-radius: 8px 8px 2px 2px;
+  background: linear-gradient(180deg, var(--purple), rgba(139,124,255,.2));
+  transform-origin: bottom;
+  animation: grow .9s ease-out both;
+  transition: filter .2s;
+}
+
+.bar:hover { filter: brightness(1.5); }
+.bar-wrap small { color: var(--muted); font-size: 10px; }
+
+.placeholder {
+  padding: 18px;
+  margin-top: 18px;
+  border: 1px dashed rgba(255,255,255,.2);
+  border-radius: 13px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.quick-links {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.quick-links a {
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.045);
+  border: 1px solid var(--line);
+  transition: .2s;
+}
+
+.quick-links a:hover {
+  background: rgba(139,124,255,.12);
+  transform: translateX(3px);
+}
+
+footer {
+  padding: 28px 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes grow {
+  from { transform: scaleY(.05); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-12px) rotate(8deg); }
+}
+
+@media (max-width: 950px) {
+  .stats { grid-template-columns: repeat(2,1fr); }
+  .content-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 650px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { padding: 18px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .brand { margin: 0 5px 15px; }
+  .nav { display: flex; overflow-x: auto; gap: 6px; }
+  .nav-label { display: none; }
+  .nav a { white-space: nowrap; padding: 10px; font-size: 12px; }
+  main { padding: 18px; }
+  .topbar { align-items: flex-start; }
+  .welcome { padding: 22px; }
+  .welcome:after { right: 10px; font-size: 65px; }
+  .stats { gap: 10px; }
+  .stat { padding: 15px; }
+  .stat-value { font-size: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="brand">Afri<span>Reserve</span></div>
+
+    <div class="nav-label">Workspace</div>
+    <nav class="nav">
+      <a class="active" href="dashboard.html">◈ Dashboard</a>
+      <a href="index.html#experiences">▦ Experiences</a>
+      <a href="index.html#stays">⌂ Stays</a>
+      <a href="index.html#journeys">✧ Journeys</a>
+      <a href="index.html#providers">♧ Providers</a>
+    </nav>
+
+    <div class="nav-label">Management</div>
+    <nav class="nav">
+      <a href="index.html#bookings">▤ Bookings</a>
+      <a href="index.html#customers">♙ Customers</a>
+      <a href="#analytics">↗ Analytics</a>
+      <a href="#settings">⚙ Settings</a>
+    </nav>
+
+    <div class="nav-label">Website</div>
+    <nav class="nav">
+      <a href="index.html">← Back to website</a>
+    </nav>
+  </aside>
+
+  <main>
+    <aside class="prototype-warning" role="note">
+      <strong>Demo dashboard — this page has no sign-in or access controls.</strong>
+      It contains placeholder data only. Do not add real customer, provider,
+      booking, or financial information.
+    </aside>
+
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Admin workspace</div>
+        <h1>Dashboard</h1>
+        <p>Your AfriReserve overview.</p>
+      </div>
+      <a class="button" href="index.html">View website ↗</a>
+    </header>
+
+    <section class="glass welcome">
+      <div class="eyebrow">Welcome back</div>
+      <h2>Make every journey memorable.</h2>
+      <p>Manage your booking experience, discover activity and keep your platform organised from one place.</p>
+      <a class="button gold" href="index.html">Explore website →</a>
+    </section>
+
+    <section class="stats">
+      <article class="glass stat">
+        <div class="stat-icon">▤</div>
+        <div class="stat-label">Total bookings</div>
+        <div class="stat-value">—</div>
+      </article>
+      <article class="glass stat">
+        <div class="stat-icon">◷</div>
+        <div class="stat-label">Pending requests</div>
+        <div class="stat-value">—</div>
+      </article>
+      <article class="glass stat">
+        <div class="stat-icon">✓</div>
+        <div class="stat-label">Confirmed bookings</div>
+        <div class="stat-value">—</div>
+      </article>
+      <article class="glass stat">
+        <div class="stat-icon">₵</div>
+        <div class="stat-label">Recorded revenue</div>
+        <div class="stat-value">—</div>
+      </article>
+    </section>
+
+    <section class="content-grid" id="analytics">
+      <article class="glass panel">
+        <h3>Booking activity</h3>
+        <p>Animated visual preview · not live data</p>
+
+        <div class="chart" aria-label="Illustrative booking activity chart">
+          <div class="bar-wrap"><div class="bar" style="height:35%;animation-delay:.1s"></div><small>Mon</small></div>
+          <div class="bar-wrap"><div class="bar" style="height:55%;animation-delay:.2s"></div><small>Tue</small></div>
+          <div class="bar-wrap"><div class="bar" style="height:42%;animation-delay:.3s"></div><small>Wed</small></div>
+          <div class="bar-wrap"><div class="bar" style="height:75%;animation-delay:.4s"></div><small>Thu</small></div>
+          <div class="bar-wrap"><div class="bar" style="height:60%;animation-delay:.5s"></div><small>Fri</small></div>
+          <div class="bar-wrap"><div class="bar" style="height:90%;animation-delay:.6s"></div><small>Sat</small></div>
+          <div class="bar-wrap"><div class="bar" style="height:48%;animation-delay:.7s"></div><small>Sun</small></div>
+        </div>
+
+        <div class="placeholder">
+          Live charts will appear after booking records are connected.
+        </div>
+      </article>
+
+      <article class="glass panel">
+        <h3>Quick actions</h3>
+        <p>Shortcuts to your workspace</p>
+
+        <div class="quick-links">
+          <a href="index.html#experiences">✧ &nbsp; Manage experiences →</a>
+          <a href="index.html#stays">⌂ &nbsp; Explore stays →</a>
+          <a href="index.html#providers">♧ &nbsp; Provider section →</a>
+          <a href="index.html">↗ &nbsp; Open public website →</a>
+        </div>
+
+        <div class="placeholder">
+          <strong>Next upgrade</strong><br>
+          Connect real bookings, provider applications, customer accounts and admin permissions.
+        </div>
+      </article>
+    </section>
+
+    <footer>AfriReserve · Admin workspace · Built for memorable journeys</footer>
+  </main>
+</div>
+</body>
+</html>

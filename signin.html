@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome | AfriReserve</title>
+
+<style>
+:root {
+  --accent: #e9c77b;
+  --accent2: #c49a4b;
+  --bg: #0b1020;
+  --glass: rgba(255,255,255,.075);
+  --line: rgba(255,255,255,.16);
+  --text: #fff;
+  --muted: #b5bdd0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 10% 5%, #263b62, transparent 45%),
+    radial-gradient(ellipse at 90% 90%, #35234e, transparent 42%),
+    var(--bg);
+  transition: background .5s ease;
+  overflow-x: hidden;
+}
+
+body.ocean {
+  --accent: #77ddf5;
+  --accent2: #4898dc;
+  background:
+    radial-gradient(ellipse at 10% 5%, #164d72, transparent 45%),
+    radial-gradient(ellipse at 90% 90%, #18365b, transparent 42%),
+    #071522;
+}
+
+body.romantic {
+  --accent: #ffb4ca;
+  --accent2: #d978a2;
+  background:
+    radial-gradient(ellipse at 10% 5%, #65344f, transparent 45%),
+    radial-gradient(ellipse at 90% 90%, #422b61, transparent 42%),
+    #1c1020;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+button, input { font: inherit; }
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  isolation: isolate;
+}
+
+.ambient::before,
+.ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ambient::before {
+  z-index: -2;
+  background: var(--bg) url("images/cape-coast-ghana.jpg") center 52% / cover no-repeat;
+  transform: scale(1.035);
+  animation: landscape-drift 38s ease-in-out infinite alternate;
+}
+
+.ambient::after {
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(4, 12, 25, .78), rgba(5, 16, 30, .48) 48%, rgba(5, 16, 30, .28)),
+    linear-gradient(0deg, rgba(5, 14, 26, .82), transparent 63%, rgba(8, 17, 31, .2)),
+    radial-gradient(ellipse at 76% 37%, rgba(247, 191, 111, .22), transparent 34%);
+}
+
+.sun-rays {
+  position: absolute;
+  top: -30%;
+  right: 1%;
+  width: min(78vw, 900px);
+  aspect-ratio: 1;
+  background: conic-gradient(
+    from 210deg at 64% 47%,
+    transparent 0deg 18deg,
+    rgba(255, 222, 166, .12) 24deg 29deg,
+    transparent 36deg 48deg,
+    rgba(255, 222, 166, .09) 53deg 58deg,
+    transparent 65deg 84deg,
+    rgba(255, 222, 166, .08) 90deg 96deg,
+    transparent 104deg 360deg
+  );
+  filter: blur(13px);
+  opacity: .7;
+  mask-image: radial-gradient(ellipse at 64% 47%, #000 0, transparent 69%);
+  animation: ray-breathe 12s ease-in-out infinite alternate;
+}
+
+.coastal-haze {
+  position: absolute;
+  top: 34%;
+  left: -8%;
+  width: 116%;
+  height: 17%;
+  background: linear-gradient(180deg, transparent, rgba(255, 222, 176, .15), transparent);
+  filter: blur(16px);
+  opacity: .55;
+  animation: haze-drift 18s ease-in-out infinite alternate;
+}
+
+.sea-shimmer {
+  position: absolute;
+  left: 33%;
+  right: -8%;
+  bottom: 13%;
+  height: 36%;
+  background:
+    repeating-linear-gradient(
+      177deg,
+      transparent 0 8px,
+      rgba(255, 220, 158, .2) 9px,
+      transparent 11px 17px
+    );
+  opacity: .36;
+  transform: skewY(-5deg);
+  mask-image: linear-gradient(180deg, transparent, #000 23%, #000 75%, transparent);
+  animation: water-glimmer 8s ease-in-out infinite alternate;
+}
+
+.palm-silhouette {
+  position: absolute;
+  right: -1%;
+  bottom: -4%;
+  width: min(36vw, 440px);
+  height: min(49vh, 440px);
+  color: rgba(3, 14, 20, .62);
+}
+
+.palm-silhouette svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.palm-trunk,
+.palm-fronds {
+  fill: currentColor;
+}
+
+.palm-fronds {
+  transform-box: view-box;
+  transform-origin: 310px 105px;
+  animation: palm-breeze 7s ease-in-out infinite alternate;
+}
+
+.sky-birds {
+  position: absolute;
+  top: 9%;
+  left: 0;
+  width: 100%;
+  height: 28%;
+  overflow: visible;
+}
+
+.sky-birds path {
+  fill: none;
+  stroke: rgba(6, 15, 26, .82);
+  stroke-linecap: round;
+  stroke-width: 2.5;
+}
+
+.sky-birds .bird-one { animation: bird-glide 9s ease-in-out infinite alternate; }
+.sky-birds .bird-two { animation: bird-glide 12s -4s ease-in-out infinite alternate-reverse; }
+.sky-birds .bird-three { animation: bird-glide 10s -6s ease-in-out infinite alternate; }
+
+.image-credit {
+  display: inline-block;
+  margin-top: 7px;
+  color: rgba(255, 255, 255, .58);
+  font-size: 10px;
+}
+
+.image-credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.orb {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: .10;
+  filter: blur(75px);
+  animation: drift 12s ease-in-out infinite alternate;
+}
+
+.orb.one { top: 4%; left: -100px; }
+.orb.two {
+  bottom: -80px;
+  right: -80px;
+  animation-delay: -5s;
+}
+
+.particle {
+  position: absolute;
+  color: var(--accent);
+  opacity: .55;
+  animation: sparkle 4s ease-in-out infinite;
+}
+
+.particle.p1 { top: 17%; left: 18%; }
+.particle.p2 { top: 30%; right: 13%; animation-delay: -1s; }
+.particle.p3 { bottom: 18%; left: 12%; animation-delay: -2s; }
+.particle.p4 { bottom: 30%; right: 19%; animation-delay: -3s; }
+
+header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 24px 6%;
+}
+
+.brand {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.brand span { color: var(--accent); }
+
+.header-link {
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  padding: 11px 17px;
+  color: white;
+  background: var(--glass);
+  backdrop-filter: blur(15px);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 850px;
+  margin: 25px auto 60px;
+  padding: 0 20px;
+}
+
+.intro {
+  text-align: center;
+  margin-bottom: 27px;
+  animation: enter .7s ease both;
+}
+
+.eyebrow {
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: clamp(32px, 6vw, 53px);
+  letter-spacing: -2px;
+  line-height: 1.12;
+  margin: 17px 0 12px;
+}
+
+.intro p {
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 570px;
+  margin: auto;
+  font-size: 14px;
+}
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 25px 75px rgba(0,0,0,.2);
+}
+
+.panel {
+  padding: clamp(20px, 5vw, 34px);
+  animation: enter .7s .1s ease both;
+}
+
+.section-title {
+  font-size: 16px;
+  margin: 0 0 7px;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.profiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.choice {
+  position: relative;
+  text-align: left;
+  padding: 21px;
+  color: white;
+  background: rgba(4,8,20,.23);
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  cursor: pointer;
+  transition: transform .25s, border-color .25s, background .25s;
+}
+
+.choice:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+
+.choice.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.choice .symbol {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: var(--accent);
+}
+
+.choice strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.choice small {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 12px;
+}
+
+.check {
+  position: absolute;
+  top: 12px;
+  right: 13px;
+  color: var(--accent);
+  opacity: 0;
+}
+
+.choice.selected .check { opacity: 1; }
+
+.theme-title { margin-top: 28px; }
+
+.themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.theme {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 10px 13px;
+  color: white;
+  background: rgba(0,0,0,.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  transition: .2s;
+}
+
+.theme.selected {
+  border-color: var(--accent);
+  background: var(--glass);
+}
+
+.swatch {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f4d991, #a87c37);
+}
+
+.swatch.blue { background: linear-gradient(135deg, #a2eeff, #3379cd); }
+.swatch.pink { background: linear-gradient(135deg, #ffd0df, #bc568d); }
+
+.button {
+  width: 100%;
+  border: 0;
+  border-radius: 13px;
+  padding: 16px;
+  margin-top: 25px;
+  color: #171522;
+  font-weight: bold;
+  cursor: pointer;
+  background: linear-gradient(110deg, var(--accent), var(--accent2));
+  transition: transform .25s, box-shadow .25s;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.browse {
+  text-align: center;
+  margin: 22px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+#signInStage { display: none; }
+#signInStage.visible { display: block; animation: enter .5s ease both; }
+
+.back {
+  display: inline-block;
+  margin-bottom: 22px;
+  font-size: 13px;
+  padding: 0;
+  color: var(--accent);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.field { margin: 18px 0; }
+
+label {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 13px;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  color: white;
+  background: rgba(0,0,0,.2);
+  border: 1px solid var(--line);
+  outline: none;
+}
+
+input:focus { border-color: var(--accent); }
+
+.notice {
+  display: none;
+  margin-top: 15px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.notice.visible { display: block; }
+
+.demo-warning {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 9%, rgba(5, 10, 22, .45));
+  color: var(--text);
+}
+
+.demo-warning strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--accent);
+}
+
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 20px 25px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drift {
+  from { transform: translate(0,0) scale(1); }
+  to { transform: translate(80px,40px) scale(1.2); }
+}
+
+@keyframes sparkle {
+  0%,100% { transform: translateY(0) scale(.8); opacity: .25; }
+  50% { transform: translateY(-13px) scale(1.3); opacity: .85; }
+}
+
+@keyframes landscape-drift {
+  from { transform: scale(1.035) translate3d(0, 0, 0); }
+  to { transform: scale(1.09) translate3d(-.7%, -.4%, 0); }
+}
+
+@keyframes ray-breathe {
+  from { opacity: .42; transform: rotate(-3deg) scale(.98); }
+  to { opacity: .78; transform: rotate(3deg) scale(1.03); }
+}
+
+@keyframes haze-drift {
+  from { transform: translateX(-1.5%); opacity: .35; }
+  to { transform: translateX(1.5%); opacity: .62; }
+}
+
+@keyframes water-glimmer {
+  from { background-position: 0 0; opacity: .22; }
+  to { background-position: 0 24px; opacity: .43; }
+}
+
+@keyframes palm-breeze {
+  from { transform: rotate(-1.2deg); }
+  to { transform: rotate(1.2deg); }
+}
+
+@keyframes bird-glide {
+  from { transform: translate(0, 0); }
+  to { transform: translate(16px, -6px); }
+}
+
+@media(max-width: 520px) {
+  header { padding: 19px 5%; }
+  .brand { font-size: 22px; }
+  .profiles { grid-template-columns: 1fr; }
+  .choice { padding: 17px; }
+  main { margin-top: 15px; }
+  h1 { letter-spacing: -1px; }
+  .ambient::before { background-position: 56% center; }
+  .ambient::after {
+    background:
+      linear-gradient(90deg, rgba(4, 12, 25, .7), rgba(5, 16, 30, .52)),
+      linear-gradient(0deg, rgba(5, 14, 26, .84), transparent 70%, rgba(8, 17, 31, .25)),
+      radial-gradient(ellipse at 76% 37%, rgba(247, 191, 111, .18), transparent 34%);
+  }
+  .palm-silhouette { width: 46vw; height: 35vh; opacity: .72; }
+  .sea-shimmer { left: 15%; right: -15%; bottom: 10%; }
+}
+
+@media(prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="ambient" aria-hidden="true">
+  <div class="sun-rays"></div>
+  <div class="coastal-haze"></div>
+  <div class="sea-shimmer"></div>
+  <svg class="palm-silhouette" viewBox="0 0 460 400" preserveAspectRatio="xMaxYMax meet">
+    <path class="palm-trunk" d="M393 410C376 323 365 251 343 190C330 151 319 123 307 99L321 92C340 123 352 151 367 187C393 252 407 325 423 410Z"/>
+    <g class="palm-fronds">
+      <path d="M310 103C258 62 210 63 155 29C195 72 241 95 305 113Z"/>
+      <path d="M309 101C275 50 269 24 252 2C259 45 272 77 305 112Z"/>
+      <path d="M313 100C326 49 357 24 394 8C371 48 346 78 315 112Z"/>
+      <path d="M316 104C366 75 407 81 459 64C422 101 371 119 316 116Z"/>
+      <path d="M310 108C263 101 222 122 185 159C231 140 272 122 312 117Z"/>
+      <path d="M314 107C357 112 386 142 408 177C373 153 343 131 312 118Z"/>
+    </g>
+  </svg>
+  <svg class="sky-birds" viewBox="0 0 1000 300" preserveAspectRatio="none">
+    <path class="bird-one" d="M208 88q12-12 24 0q12-12 24 0"/>
+    <path class="bird-two" d="M628 51q9-9 18 0q9-9 18 0"/>
+    <path class="bird-three" d="M790 137q7-7 14 0q7-7 14 0"/>
+  </svg>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+  <span class="particle p1">✦</span>
+  <span class="particle p2">✧</span>
+  <span class="particle p3">✦</span>
+  <span class="particle p4">✧</span>
+</div>
+
+<header>
+  <a class="brand" href="index.html">Afri<span>Reserve</span></a>
+  <a class="header-link" href="index.html">Explore website ↗</a>
+</header>
+
+<main>
+  <section id="welcomeStage">
+    <div class="intro">
+      <div class="eyebrow">Your journey begins here</div>
+      <h1>Discover your kind<br>of extraordinary.</h1>
+      <p>
+        Explore unforgettable stays, experiences and journeys across Africa.
+        Make AfriReserve feel like yours before you sign in.
+      </p>
+    </div>
+
+    <section class="glass panel">
+      <h2 class="section-title">How will you use AfriReserve?</h2>
+      <p class="hint">Choose your profile to personalise your experience.</p>
+
+      <div class="profiles">
+        <button type="button" class="choice" data-profile="customer"
+          aria-pressed="false">
+          <span class="check">✓</span>
+          <span class="symbol">✧</span>
+          <strong>I'm a Customer</strong>
+          <small>Discover places, book experiences and plan your next journey.</small>
+        </button>
+
+        <button type="button" class="choice" data-profile="provider"
+          aria-pressed="false">
+          <span class="check">✓</span>
+          <span class="symbol">◇</span>
+          <strong>I'm a Provider</strong>
+          <small>Share your stays, experiences or services with travellers.</small>
+        </button>
+      </div>
+
+      <h2 class="section-title theme-title">Choose your visual theme</h2>
+      <p class="hint">Change the colours and atmosphere to suit your style.</p>
+
+      <div class="themes">
+        <button type="button" class="theme selected"
+          data-theme="gold" aria-pressed="true">
+          <span class="swatch"></span> Luxury Gold
+        </button>
+        <button type="button" class="theme"
+          data-theme="ocean" aria-pressed="false">
+          <span class="swatch blue"></span> Ocean Blue
+        </button>
+        <button type="button" class="theme"
+          data-theme="romantic" aria-pressed="false">
+          <span class="swatch pink"></span> Romantic Rose
+        </button>
+      </div>
+
+      <button type="button" class="button" id="continueButton" disabled>
+        Choose a profile to continue →
+      </button>
+      <div class="browse">
+        Prefer to look around first? <a href="index.html">Explore the website</a>
+      </div>
+    </section>
+  </section>
+
+  <section id="signInStage" class="glass panel">
+    <button type="button" class="back" id="backButton">← Back to personalisation</button>
+    <div class="eyebrow">Welcome back</div>
+    <h1 style="font-size:32px" id="signInHeading">Sign in to continue</h1>
+    <p class="hint" id="profileSummary"></p>
+
+    <div class="notice visible demo-warning" role="note">
+      <strong>Demo only — no real authentication is connected.</strong>
+      Do not enter a real password. This page does not send or store the
+      information entered below.
+    </div>
+
+    <form id="signInForm">
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" type="email" autocomplete="email"
+          placeholder="you@example.com" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password"
+          autocomplete="current-password"
+          placeholder="Enter your password" required>
+      </div>
+
+      <button class="button" type="submit">Sign In →</button>
+      <div class="notice" id="notice" role="status" aria-live="polite"></div>
+    </form>
+
+    <p class="browse">New to AfriReserve? <a href="index.html">Explore first</a></p>
+  </section>
+</main>
+
+<footer>
+  AfriReserve · Reserve your journey. Discover Africa.
+  <br>
+  <span class="image-credit">
+    Cape Coast photo by <a href="https://commons.wikimedia.org/wiki/File:Beach_at_Cape_Coast.jpg"
+      target="_blank" rel="noreferrer">Kradolferp</a> ·
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a>
+  </span>
+</footer>
+
+<script>
+const profileButtons = document.querySelectorAll("[data-profile]");
+const themeButtons = document.querySelectorAll("[data-theme]");
+const continueButton = document.getElementById("continueButton");
+const welcomeStage = document.getElementById("welcomeStage");
+const signInStage = document.getElementById("signInStage");
+const profileSummary = document.getElementById("profileSummary");
+const signInHeading = document.getElementById("signInHeading");
+const notice = document.getElementById("notice");
+
+let selectedProfile = "";
+
+profileButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    selectedProfile = button.dataset.profile;
+
+    profileButtons.forEach(item => {
+      const active = item === button;
+      item.classList.toggle("selected", active);
+      item.setAttribute("aria-pressed", String(active));
+    });
+
+    continueButton.disabled = false;
+    continueButton.textContent = "Continue as " +
+      (selectedProfile === "customer" ? "Customer" : "Provider") + " →";
+  });
+});
+
+themeButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    document.body.classList.remove("ocean", "romantic");
+
+    if (button.dataset.theme !== "gold") {
+      document.body.classList.add(button.dataset.theme);
+    }
+
+    themeButtons.forEach(item => {
+      const active = item === button;
+      item.classList.toggle("selected", active);
+      item.setAttribute("aria-pressed", String(active));
+    });
+  });
+});
+
+continueButton.addEventListener("click", () => {
+  if (!selectedProfile) return;
+
+  const role = selectedProfile === "customer"
+    ? "Customer" : "Experience Provider";
+
+  profileSummary.textContent =
+    "You're continuing as a " + role +
+    ". Your chosen theme will remain active on this page.";
+
+  signInHeading.textContent = "Sign in as a " + role;
+  welcomeStage.style.display = "none";
+  signInStage.classList.add("visible");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.getElementById("backButton").addEventListener("click", () => {
+  signInStage.classList.remove("visible");
+  welcomeStage.style.display = "block";
+  notice.classList.remove("visible");
+});
+
+document.getElementById("signInForm").addEventListener("submit", event => {
+  event.preventDefault();
+  notice.textContent =
+    "The sign-in interface is ready, but real account verification " +
+    "has not been connected yet. No account has been signed in.";
+  notice.classList.add("visible");
+});
+</script>
+</body>
+</html>
